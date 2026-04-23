@@ -1395,9 +1395,9 @@ PRODUCTS = rows.map((row, index) => {
     const cols = row.split(',');
     const name = cols[0]?.trim();
     const price = parseFloat(cols[1]);
- const note = cols[2]?.trim() || '';
-const offer = cols[3]?.trim() || '';
-    const imgFromSheet = cols[4]?.trim(); // قراءة العمود الخامس (E)
+    const note = cols[2]?.trim() || '';
+    const offer = cols[3]?.trim() || '';
+    const imgFromSheet = cols[4]?.trim(); 
 
     if (!name || isNaN(price)) return null;
 
@@ -1406,9 +1406,9 @@ const offer = cols[3]?.trim() || '';
         name: name,
         price: price,
         desc: note,
+        emoji: '', // أضف هذا السطر لمنع ظهور undefined
         badge: (offer && offer !== "") ? offer : 'طازج',
         badgeType: (offer && offer !== "") ? 'hot' : 'fresh',
-        // السحر هنا: لو فيه لينك في العمود الخامس استخدمه، لو مفيش حط صورة افتراضية
         img: (imgFromSheet && imgFromSheet !== "") ? imgFromSheet : 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500'
     };
 }).filter(p => p !== null);
