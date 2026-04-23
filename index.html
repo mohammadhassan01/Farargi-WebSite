@@ -883,29 +883,6 @@
   </div>
 </section>
 
-<!-- ════════════════════════════════════════
-     OFFERS
-════════════════════════════════════════ -->
-<section id="offers">
-  <div class="container">
-    <div class="section-head reveal">
-      <div class="section-tag"><i class="fas fa-tags"></i> عروض الأسبوع</div>
-      <h2 class="section-title">وفّر أكثر <span style="color:#FFAAAA">مع عروضنا</span></h2>
-      <p class="section-sub">عروض أسبوعية وخصومات على الكميات – سارعوا قبل نفاد الكمية!</p>
-    </div>
-    <div class="offers-grid">
-      <div class="offer-card reveal">
-        <div class="offer-badge"><i class="fas fa-gift"></i> عرض الأسبوع</div>
-        <div class="offer-title">اشتري ٢ كيلو واحصل على ٠.٥ كيلو مجاناً</div>
-        <div class="offer-desc">ينطبق على جميع قطع الدجاج الطازجة. العرض ساري طوال الأسبوع أو حتى نفاد الكمية.</div>
-        <div class="offer-highlight"><i class="fas fa-drumstick-bite"></i> وفر حتى ١٥٪ على طلبك</div>
-        <div class="offer-timer"><i class="fas fa-clock"></i> ينتهي الجمعة القادمة</div>
-      </div>
-
-
-    </div>
-  </div>
-</section>
 
 <!-- ════════════════════════════════════════
      CONTACT
@@ -920,13 +897,13 @@
     <div class="contact-grid">
       <div class="reveal">
         <div class="contact-items">
-          <a href="tel:+201208887976" class="contact-item">
+          <a href="tel:+201009569606" class="contact-item">
             <div class="ci-icon green"><i class="fas fa-phone-alt"></i></div>
-            <div><div class="ci-label">اتصل بنا</div><div class="ci-value">01208887976</div></div>
+            <div><div class="ci-label">اتصل بنا</div><div class="ci-value">01009569606 - 01128366165</div></div>
           </a>
-          <a href="https://wa.me/201208887976" class="contact-item" target="_blank">
+          <a href="https://chat.whatsapp.com/BW2jRQVjr0HKur9KlAFUj3?mode=gi_t" class="contact-item" target="_blank">
             <div class="ci-icon green" style="background:#FDE9E9;color:#25D366"><i class="fab fa-whatsapp"></i></div>
-            <div><div class="ci-label">واتساب</div><div class="ci-value">أرسل رسالة الآن</div></div>
+            <div><div class="ci-label">واتساب</div><div class="ci-value">لمتابعة العروض على جروب الواتساب</div></div>
           </a>
           <div class="contact-item">
             <div class="ci-icon red"><i class="fas fa-map-marker-alt"></i></div>
@@ -934,12 +911,9 @@
           </div>
           <div class="contact-item">
             <div class="ci-icon gold"><i class="fas fa-clock"></i></div>
-            <div><div class="ci-label">ساعات العمل</div><div class="ci-value">طول الأسبوع من الساعة 7 صباحاً إلى 10 مساءً</div></div>
+            <div><div class="ci-label">ساعات العمل</div><div class="ci-value">طول الأسبوع من الساعة 7 صباحاً إلى 8 مساءً</div></div>
           </div>
-          <div class="contact-item">
-            <div class="ci-icon gold"><i class="fas fa-sun"></i></div>
-            <div><div class="ci-label">الجمعة</div><div class="ci-value">٢ ظهراً – ١١ مساءً</div></div>
-          </div>
+       
         </div>
       </div>
       <div class="map-wrap reveal">
@@ -947,7 +921,7 @@
           src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3445.870467917297!2d31.4829205!3d30.2692717!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14580579f1591dd9%3A0xaa14e6260fc8ea62!2z2LPZhtiq2LEg2K7Yp9mGINin2YTYudmF2KfYsQ!5e0!3m2!1sen!2seg!4v1776883296533!5m2!1sen!2seg" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
           allowfullscreen="" loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
-          title="موقع محل فراجي على الخريطة">
+          title="موقع محل طيور الرحمه على الخريطة">
         </iframe>
       </div>
     </div>
@@ -1130,11 +1104,11 @@ function changeQty(productId, delta) {
 
   if (next === 0) {
     delete cart[productId];
-    if (delta < 0 && current > 0) showToast(`🗑️ تمت إزالة "${product.name}" من السلة`, 'remove');
+    if (delta < 0 && current > 0) showToast(`تمت إزالة "${product.name}" من السلة`, 'remove');
   } else {
     const isNew = !cart[productId];
     cart[productId] = next;
-    if (delta > 0 && isNew) showToast(`✅ تمت إضافة "${product.name}" إلى السلة`, 'success');
+    if (delta > 0 && isNew) showToast(`تمت إضافة "${product.name}" إلى السلة`, 'success');
   }
 
   saveCart();
@@ -1325,7 +1299,7 @@ function sendWhatsAppOrder() {
   msg += `✅ شكراً لثقتكم في محل فراجي 🍗`;
 
   const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/201208887976?text=${encoded}`, '_blank');
+  window.open(`https://wa.me/01009569606?text=${encoded}`, '_blank');
 
   showToast('✅ جاري فتح واتساب...', 'success');
 }
@@ -1421,8 +1395,8 @@ PRODUCTS = rows.map((row, index) => {
     const cols = row.split(',');
     const name = cols[0]?.trim();
     const price = parseFloat(cols[1]);
-    const note = cols[2]?.trim();
-    const offer = cols[3]?.trim();
+ const note = cols[2]?.trim() || '';
+const offer = cols[3]?.trim() || '';
     const imgFromSheet = cols[4]?.trim(); // قراءة العمود الخامس (E)
 
     if (!name || isNaN(price)) return null;
