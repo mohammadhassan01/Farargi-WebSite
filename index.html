@@ -1060,61 +1060,6 @@
    PRODUCTS DATA
 ════════════════════════════════════════ */
 let PRODUCTS = [
-  {
-    id: 'whole-chicken',
-    emoji: '🐔',
-    name: 'دجاجة كاملة',
-    desc: 'منظفة ومجهزة، من أجود المزارع المحلية',
-    price: 85,
-    badge: 'طازج',
-    badgeType: 'fresh',
-    img: 'https://images.unsplash.com/photo-1604503468506-a8da13d11d36?w=500&q=80',
-    alt: 'دجاجة كاملة'
-  },
-  {
-    id: 'breast',
-    emoji: '🥩',
-    name: 'صدر دجاج (بلا عظم)',
-    desc: 'طازج ومقطع، خالٍ من الشحوم بالكامل',
-    price: 120,
-    badge: 'طازج',
-    badgeType: 'fresh',
-    img: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=500&q=80',
-    alt: 'صدر دجاج'
-  },
-  {
-    id: 'thighs',
-    emoji: '🍗',
-    name: 'أفخاذ دجاج',
-    desc: 'طرية وطازجة، مثالية للشوي والطهي',
-    price: 95,
-    badge: 'عرض',
-    badgeType: 'offer',
-    img: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&q=80',
-    alt: 'أفخاذ دجاج'
-  },
-  {
-    id: 'wings',
-    emoji: '🍖',
-    name: 'أجنحة دجاج',
-    desc: 'مثالية للقلي والشوي، منظفة بالكامل',
-    price: 70,
-    badge: 'طازج',
-    badgeType: 'fresh',
-    img: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=500&q=80',
-    alt: 'أجنحة دجاج'
-  },
-  {
-    id: 'liver',
-    emoji: '❤️',
-    name: 'كبدة وقوانص',
-    desc: 'غنية بالبروتين، طازجة يومياً من المزرعة',
-    price: 65,
-    badge: 'طازج',
-    badgeType: 'fresh',
-    img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80',
-    alt: 'كبدة وقوانص'
-  }
 ];
 
 /* ════════════════════════════════════════
@@ -1456,54 +1401,59 @@ document.head.appendChild(shakeStyle);
 /* ════════════════════════════════════════
    INIT
 ════════════════════════════════════════ */
-renderProductCards();
-updateCartBadges();
-updateCartSidebar();
-// --- جزء الربط المحدث بجوجل شيت لدعم العروض الديناميكية ---
+/* ════════════════════════════════════════
+   جزء الربط الكامل والمحسن بجوجل شيت
+════════════════════════════════════════ */
+
+// 1. التعريفات الأساسية (التي استخرجناها من رابط الشيت الخاص بك)
+const SHEET_ID_LIVE = "1TCix7MmCDIAGObjePOfRKUyqlI7-h23Nhfiddbo7veI";
+const GID_LIVE = "1773602766";
+const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID_LIVE}/export?format=csv&gid=${GID_LIVE}`;
+
 async function syncWithGoogleSheets() {
     try {
         const response = await fetch(SHEET_CSV_URL);
         const data = await response.text();
-        const rows = data.split(/\r?\n/).slice(1); // تجاهل الهيدر
+        const rows = data.split(/\r?\n/).slice(1); // تجاهل صف العناوين
 
-        // تحديث مصفوفة PRODUCTS
-        PRODUCTS = rows.map((row, index) => {
-            const cols = row.split(',');
-            const name = cols[0]?.trim();
-            const price = parseFloat(cols[1]);
-            const note = cols[2]?.trim() || 'طازج ومنظف يومياً';
-            const offerText = cols[3]?.trim(); // قراءة العمود الرابع (العمود D في الشيت)
+        // تحديث مصفوفة PRODUCTS بالبيانات الحقيقية (الـ 18 منتج)
+PRODUCTS = rows.map((row, index) => {
+    const cols = row.split(',');
+    const name = cols[0]?.trim();
+    const price = parseFloat(cols[1]);
+    const note = cols[2]?.trim();
+    const offer = cols[3]?.trim();
+    const imgFromSheet = cols[4]?.trim(); // قراءة العمود الخامس (E)
 
-            if (!name || isNaN(price)) return null;
+    if (!name || isNaN(price)) return null;
 
-            // تحديد الصورة بناءً على الاسم
-            let img = 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500';
-            if (name.includes('بانيه')) img = 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=500';
-            if (name.includes('وراك')) img = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500';
+    return {
+        id: `live-${index}`,
+        name: name,
+        price: price,
+        desc: note,
+        badge: (offer && offer !== "") ? offer : 'طازج',
+        badgeType: (offer && offer !== "") ? 'hot' : 'fresh',
+        // السحر هنا: لو فيه لينك في العمود الخامس استخدمه، لو مفيش حط صورة افتراضية
+        img: (imgFromSheet && imgFromSheet !== "") ? imgFromSheet : 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500'
+    };
+}).filter(p => p !== null);
 
-            return {
-                id: `live-${index}`,
-                emoji: name.includes('بانيه') ? '🥩' : '🍗',
-                name: name,
-                desc: note,
-                price: price,
-                // المنطق: لو العمود الرابع فيه نص، يظهر كعرض (hot)، لو فاضي يظهر "طازج" (fresh)
-                badge: (offerText && offerText !== "") ? offerText : 'طازج',
-                badgeType: (offerText && offerText !== "") ? 'hot' : 'fresh',
-                img: img
-            };
-        }).filter(p => p !== null);
-
-        // إعادة رسم الكروت بالبيانات والعروض الجديدة
-        if (typeof renderProductCards === "function") {
-            renderProductCards(); 
-        }
+        // تحديث واجهة المستخدم بالبيانات الجديدة
+        if (typeof renderProductCards === "function") renderProductCards(); 
+        if (typeof updateCartBadges === "function") updateCartBadges();
+        if (typeof updateCartSidebar === "function") updateCartSidebar();
         
-        console.log("✅ تم تحديث الأسعار والعروض من جوجل بنجاح");
+        console.log("✅ تم تحديث الـ 18 صنفاً والأسعار والعروض بنجاح");
     } catch (err) {
-        console.error("❌ عطل في المزامنة:", err);
+        console.error("❌ فشل سحب البيانات من جوجل:", err);
     }
 }
+
+// تشغيل المزامنة تلقائياً فور تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    syncWithGoogleSheets();
+});
 </script>
 
 </body>
