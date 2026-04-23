@@ -901,20 +901,8 @@
         <div class="offer-highlight"><i class="fas fa-drumstick-bite"></i> وفر حتى ١٥٪ على طلبك</div>
         <div class="offer-timer"><i class="fas fa-clock"></i> ينتهي الجمعة القادمة</div>
       </div>
-      <div class="offer-card reveal">
-        <div class="offer-badge"><i class="fas fa-truck"></i> عرض التوصيل</div>
-        <div class="offer-title">توصيل مجاني للطلبات فوق ٣ كيلو</div>
-        <div class="offer-desc">اطلب ٣ كيلو فأكثر من منتجاتنا واستمتع بتوصيل مجاني لباب منزلك في أقل من ٦٠ دقيقة.</div>
-        <div class="offer-highlight"><i class="fas fa-motorcycle"></i> توصيل سريع – مجاناً</div>
-        <div class="offer-timer"><i class="fas fa-clock"></i> العرض دائم</div>
-      </div>
-      <div class="offer-card reveal">
-        <div class="offer-badge"><i class="fas fa-store"></i> عرض الجملة</div>
-        <div class="offer-title">خصم ١٠٪ على الطلبات بالجملة (٥ كيلو+)</div>
-        <div class="offer-desc">للمطاعم والأسر الكبيرة – احصل على أفضل الأسعار عند طلب كميات كبيرة من أجود الدواجن.</div>
-        <div class="offer-highlight"><i class="fas fa-percent"></i> تواصل معنا للتفاصيل</div>
-        <div class="offer-timer"><i class="fas fa-phone"></i> اتصل: 01234567890</div>
-      </div>
+
+
     </div>
   </div>
 </section>
@@ -1471,26 +1459,24 @@ document.head.appendChild(shakeStyle);
 renderProductCards();
 updateCartBadges();
 updateCartSidebar();
-// --- جزء الربط بجوجل شيت (إضافة فقط) ---
-const SHEET_ID_LIVE = "1TCix7MmCDIAGObjePOfRKUyqlI7-h23Nhfiddbo7veI";
-const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID_LIVE}/export?format=csv`;
-
+// --- جزء الربط المحدث بجوجل شيت لدعم العروض الديناميكية ---
 async function syncWithGoogleSheets() {
     try {
         const response = await fetch(SHEET_CSV_URL);
         const data = await response.text();
         const rows = data.split(/\r?\n/).slice(1); // تجاهل الهيدر
 
-        // تحديث مصفوفة PRODUCTS الموجودة عندك فعلياً في الكود
+        // تحديث مصفوفة PRODUCTS
         PRODUCTS = rows.map((row, index) => {
             const cols = row.split(',');
             const name = cols[0]?.trim();
             const price = parseFloat(cols[1]);
             const note = cols[2]?.trim() || 'طازج ومنظف يومياً';
+            const offerText = cols[3]?.trim(); // قراءة العمود الرابع (العمود D في الشيت)
 
             if (!name || isNaN(price)) return null;
 
-            // تحديد الصورة بناءً على الاسم (عشان يفضل شكل موقعك حلو)
+            // تحديد الصورة بناءً على الاسم
             let img = 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500';
             if (name.includes('بانيه')) img = 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=500';
             if (name.includes('وراك')) img = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500';
@@ -1501,27 +1487,23 @@ async function syncWithGoogleSheets() {
                 name: name,
                 desc: note,
                 price: price,
-                badge: 'طازج',
-                badgeType: 'fresh',
+                // المنطق: لو العمود الرابع فيه نص، يظهر كعرض (hot)، لو فاضي يظهر "طازج" (fresh)
+                badge: (offerText && offerText !== "") ? offerText : 'طازج',
+                badgeType: (offerText && offerText !== "") ? 'hot' : 'fresh',
                 img: img
             };
         }).filter(p => p !== null);
 
-        // بعد ما حدثنا المصفوفة، بننادي على دالة الرسم بتاعتك عشان تظهر الأسعار الجديدة
+        // إعادة رسم الكروت بالبيانات والعروض الجديدة
         if (typeof renderProductCards === "function") {
             renderProductCards(); 
         }
         
-        console.log("✅ تم تحديث الأسعار من جوجل بنجاح");
+        console.log("✅ تم تحديث الأسعار والعروض من جوجل بنجاح");
     } catch (err) {
-        console.error("❌ فشل التحديث من جوجل، الموقع شغال بالبيانات القديمة:", err);
+        console.error("❌ عطل في المزامنة:", err);
     }
 }
-
-// تشغيل المزامنة أول ما الصفحة تحمل
-document.addEventListener('DOMContentLoaded', () => {
-    syncWithGoogleSheets();
-});
 </script>
 
 </body>
